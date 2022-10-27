@@ -28,7 +28,7 @@ for cep in array_cep:
 
     try:
         endereco = get_address_from_cep(str(cep_ok), webservice=WebService.CORREIOS)
-        print(f"Lido: {endereco['cep']} - Rua: {endereco['logradouro']}")
+        print(f"Lido: {endereco['cep']}")
 
     except exceptions.InvalidCEP:
         ceps_inexistentes.append(cep_ok)
