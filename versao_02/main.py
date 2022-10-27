@@ -1,8 +1,11 @@
 import xlrd
 import numpy as np
+import time
 from pycep_correios import get_address_from_cep, WebService, exceptions
 
-wb = xlrd.open_workbook('CEP.xlsx')
+tempo_inicial = time.time()
+
+wb = xlrd.open_workbook('CEP_500.xlsx')
 p = wb.sheet_by_name('Lista')
 lin = p.nrows
 array_cep = np.zeros(lin)
@@ -11,6 +14,10 @@ for i in range(lin):
     array_cep[i] = p.cell(i, 3).value
 
 #=============================================
+
+print("=" * 80)
+print("===========>> Iniciando consultas - Aguarde")
+print("=" * 80)
 
 counter = 0
 erro_caracteres = 0
@@ -28,7 +35,6 @@ for cep in array_cep:
 
     try:
         endereco = get_address_from_cep(str(cep_ok), webservice=WebService.CORREIOS)
-        print(f"Lido: {endereco['cep']}")
 
     except exceptions.InvalidCEP:
         ceps_inexistentes.append(cep_ok)
@@ -59,6 +65,7 @@ print('*' * 30)
 print(f'A quantidade de CEPs não encontrados no WebService foi de: {counter}')
 print(f'LISTA de CEPs inexistentes no WebService: {ceps_inexistentes}')
 print('*' * 30)
+print("--- Tempo de execução: %s segundos ---" % (time.time() - tempo_inicial))
 
 
 
