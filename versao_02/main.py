@@ -1,17 +1,18 @@
-import xlrd
-import numpy as np
 import time
 from pycep_correios import get_address_from_cep, WebService, exceptions
+from openpyxl import Workbook, load_workbook
 
 tempo_inicial = time.time()
 
-wb = xlrd.open_workbook('CEP_500.xlsx')
-p = wb.sheet_by_name('Lista')
-lin = p.nrows
-array_cep = np.zeros(lin)
+# carregamos o arquivo excel
+planilha = load_workbook('CEP_reduzido.xlsx')
+aba_ativa = planilha.active
 
-for i in range(lin):
-    array_cep[i] = p.cell(i, 3).value
+array_cep = []
+
+for celula in aba_ativa['D']:
+    array_cep.append(celula.value)
+
 
 #=============================================
 
@@ -28,19 +29,20 @@ cep_qnt_invalida = []
 Percorre a lista com os CEPs faz a requisição e valida se existe todos os CEPs válidos.
 '''
 for cep in array_cep:
-    cep_ok = int(cep)
-    if len(str(cep_ok)) != 8:
+
+    if len(str(cep)) != 8:
         erro_caracteres += 1
-        cep_qnt_invalida.append(cep_ok)
+        cep_qnt_invalida.append(cep)
 
     try:
-        endereco = get_address_from_cep(str(cep_ok), webservice=WebService.CORREIOS)
+        endereco = get_address_from_cep(str(cep), webservice=WebService.CORREIOS)
+        print(f'Lido: {cep} - Cidade: {endereco["cidade"]}')
 
     except exceptions.InvalidCEP:
-        ceps_inexistentes.append(cep_ok)
+        ceps_inexistentes.append(cep)
 
     except exceptions.CEPNotFound:
-        ceps_inexistentes.append(cep_ok)
+        ceps_inexistentes.append(cep)
         counter += 1
 
     except exceptions.ConnectionError as errc:
@@ -53,7 +55,7 @@ for cep in array_cep:
         print(f'Erro de HTTPt: {errt}')
 
     except exceptions.BaseException as e:
-        ceps_inexistentes.append(cep_ok)
+        ceps_inexistentes.append(cep)
         counter += 1
 
 
