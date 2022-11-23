@@ -1,6 +1,6 @@
 <?php
 //require '../vendor/autoload.php';
-ini_set('memory_limit', '1024M');
+namespace Classes;
 use PhpOffice\PhpSpreadsheet\Reader;
 
 /**

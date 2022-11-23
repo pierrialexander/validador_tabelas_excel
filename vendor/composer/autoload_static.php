@@ -12,14 +12,6 @@ class ComposerStaticInitb5d61923cfd27a8a81b5d9bf1294ea8c
     );
 
     public static $prefixLengthsPsr4 = array (
-        's' => 
-        array (
-            'src\\' => 4,
-        ),
-        'c' => 
-        array (
-            'core\\' => 5,
-        ),
         'Z' => 
         array (
             'ZipStream\\' => 10,
@@ -43,19 +35,12 @@ class ComposerStaticInitb5d61923cfd27a8a81b5d9bf1294ea8c
         'C' => 
         array (
             'Complex\\' => 8,
+            'Classes\\' => 8,
             'ClanCats\\Hydrahon\\' => 18,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'src\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src',
-        ),
-        'core\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/core',
-        ),
         'ZipStream\\' => 
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
@@ -70,8 +55,8 @@ class ComposerStaticInitb5d61923cfd27a8a81b5d9bf1294ea8c
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -92,6 +77,10 @@ class ComposerStaticInitb5d61923cfd27a8a81b5d9bf1294ea8c
         'Complex\\' => 
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
+        ),
+        'Classes\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes',
         ),
         'ClanCats\\Hydrahon\\' => 
         array (

@@ -1,4 +1,5 @@
 <?php
+namespace Classes;
 /**
  * Classe responsável por fazer as validações do arquivo Excel.
  * @author Pierri Alexander Vidmar
