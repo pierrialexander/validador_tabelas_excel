@@ -1,12 +1,18 @@
 <?php
 namespace Classes;
 
+use Classes\Validacao;
+
 /**
  * Classe responsável por conter as rotinas de Verificações e Edições dos arquivos CSV das tabelas de transporte.
  * @author Pierri Alexander Vidmar
  * @since 22/11/2022
  */
 class CSV {
+
+    public $arrayCEP = [];
+
+
     /**
      * Método responsável por ler um arquivo CSV e retornar um array de dados
      * @param string $arquivo
@@ -26,14 +32,10 @@ class CSV {
         // Abrir o Arquivo
         $csv = fopen($arquivo, 'r');
 
-        // CABEÇALHO DOS DADOS (primeira linha)
-        //$cabecalhoDados = $cabecalho ? fgetcsv($csv, 0, $delimitador) : [];
-
         // Itera o arquivo lendo cada linha
         // Verifica se tem cabeçalho, se sim, combina eles (somando eles)
         while($linha = fgetcsv($csv, 0, $delimitador)){
             $dados[] = $linha;
-            //$dados[] = $cabecalhoDados ? array_combine($cabecalhoDados, $linha) : $linha;
         }
 
         return $dados;
@@ -81,6 +83,41 @@ class CSV {
 
         return true;
     }
+
+
+    /**
+     * Método para montar o array de CEP a partir do CSV já corrigido.
+     * @param $arquivo
+     * @param $cabecalho
+     * @param $delimitador
+     * @return array
+     */
+    public static function montaArrayCEP($arquivo, $cabecalho = true, $delimitador = ',') {
+
+        $csv = fopen($arquivo, 'r');
+        $arrayCEP = [];
+
+        //CABEÇALHO DOS DADOS (primeira linha)
+        $cabecalhoDados = $cabecalho ? fgetcsv($csv, 0, $delimitador) : [];
+
+        // Itera o arquivo lendo cada linha
+        // Verifica se tem cabeçalho, se sim, combina eles (somando eles)
+        while($linha = fgetcsv($csv, 0, $delimitador)){
+            $arrayCabecalho[] = $cabecalhoDados ? array_combine($cabecalhoDados, $linha) : $linha;
+        }
+
+
+        foreach($arrayCabecalho as $arrayValor) {
+            foreach ($arrayValor as $key => $valor) {
+                if($key == 'cepInicial') {
+                    array_push($arrayCEP, $valor);
+                }
+            }
+        }
+
+        return $arrayCEP;
+    }
+
 
 
 
