@@ -15,13 +15,17 @@
 
         <?php
         require __DIR__ . '/vendor/autoload.php';
+        require __DIR__ . '/classes/Model.php';
     
         use Classes\CSV;
         use Classes\Validacao;
         use Classes\BaseCep;
+        use Classes\CepModel;
 
         // Instancia do Validador
         $validador = new Validacao();
+
+        $cepModel = new CepModel();
 
         // recebendo o arquivo multipart
         $file = $_FILES["arquivo"];
@@ -40,7 +44,7 @@
 
                 if($resultado) {
 
-                    $baseCep = BaseCep::lerBaseCep('./BaseCEP/Lista_de_CEPs.xlsx', 'D', 'E');
+                    //$baseCep = BaseCep::lerBaseCep('./BaseCEP/Lista_de_CEPs.xlsx', 'D', 'E');
                     $arrayCEP = CSV::montaArrayCEP($dirFileName, true, ';');
 
                     $validador->validar($arrayCEP);
@@ -48,10 +52,9 @@
                     //================================================================
                     // VERIFICA SE O CEP EXISTE NA BASE DE DADOS
                     //================================================================
-                    $resultadoComparacao = array_diff($arrayCEP, $baseCep);
-                    if (!empty($resultadoComparacao)) {
-                        foreach ($resultadoComparacao as $value) {
-                            if (!in_array($value, $validador->ceps_incorretos)) {
+                    foreach ($arrayCEP as $value) {
+                        if (!in_array($value, $validador->ceps_incorretos)) {
+                            if(!$cepModel->getCep($value)){
                                 array_push($validador->ceps_inexistentes, $value);
                             }
                         }
