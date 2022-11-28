@@ -18,6 +18,15 @@ class Validacao {
     // Array que armazena os CEPs únicos
     public $ceps_unicos = [];
 
+    // Array que armazena as Siglas Divergentes;
+    public $siglas_divergentes = [];
+
+
+
+    public function validarSiglas($arrayPrazo, $arrayPreco) {
+        $this->siglas_divergentes = array_diff($arrayPrazo, $arrayPreco);
+    }
+
     /**
      * Método principal que centraliza a execução das validações de CEP.
      * @param $arquivo

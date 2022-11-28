@@ -13,6 +13,7 @@ return array(
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'PhpOffice\\PhpSpreadsheet\\' => array($vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet'),
     'MyCLabs\\Enum\\' => array($vendorDir . '/myclabs/php-enum/src'),
+    'Model\\' => array($baseDir . '/model'),
     'Matrix\\' => array($vendorDir . '/markbaker/matrix/classes/src'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Classes\\' => array($baseDir . '/classes'),

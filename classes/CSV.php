@@ -109,13 +109,49 @@ class CSV {
 
         foreach($arrayCabecalho as $arrayValor) {
             foreach ($arrayValor as $key => $valor) {
-                if($key == 'cepInicial') {
+                if($key == 'cepInicial' || $key == 'cepFinal') {
                     array_push($arrayCEP, $valor);
                 }
             }
         }
 
         return $arrayCEP;
+    }
+
+    /**
+     * Método para montar o array de Siglas a partir do CSV já corrigido.
+     * @param $arquivo
+     * @param $cabecalho
+     * @param $delimitador
+     * @return array
+     */
+    public static function montaArraySigla($arquivo, $cabecalho = true, $delimitador = ',') {
+
+        $csv = fopen($arquivo, 'r');
+        $arraySigla = [];
+
+        //CABEÇALHO DOS DADOS (primeira linha)
+        $cabecalhoDados = $cabecalho ? fgetcsv($csv, 0, $delimitador) : [];
+
+        // Itera o arquivo lendo cada linha
+        // Verifica se tem cabeçalho, se sim, combina eles (somando eles)
+        while($linha = fgetcsv($csv, 0, $delimitador)){
+            $arrayCabecalho[] = $cabecalhoDados ? array_combine($cabecalhoDados, $linha) : $linha;
+        }
+
+
+        foreach($arrayCabecalho as $arrayValor) {
+            foreach ($arrayValor as $key => $valor) {
+                if($key == 'uf') {
+                    array_push($arraySigla, $valor);
+                }
+                if($key == 'regiao') {
+                    array_push($arraySigla, $valor);
+                }
+            }
+        }
+
+        return $arraySigla;
     }
 
 

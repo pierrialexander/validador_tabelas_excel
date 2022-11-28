@@ -1,7 +1,5 @@
 <?php
-
-namespace Classes;
-
+namespace Model;
 class CepModel extends Model
 {
     private $cepInfo;

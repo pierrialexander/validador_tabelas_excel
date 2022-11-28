@@ -15,39 +15,75 @@
 
         <?php
         require __DIR__ . '/vendor/autoload.php';
-        require __DIR__ . '/classes/Model.php';
-    
+        require __DIR__ . '/model/Model.php';
+
         use Classes\CSV;
         use Classes\Validacao;
-        use Classes\BaseCep;
-        use Classes\CepModel;
+        use Model\CepModel;
+
+        // Registra o ínício do tempo de execução
+        $start_time = microtime(true);
 
         // Instancia do Validador
         $validador = new Validacao();
 
         $cepModel = new CepModel();
 
-        // recebendo o arquivo multipart
-        $file = $_FILES["arquivo"];
+        // recebendo o arquivo multipart de Prazo
+        $filePrazo = $_FILES["arquivoPrazo"];
 
-        $dirFileName = "uploads/" . $file["name"];
+        // recebendo o arquivo multipart de Preço
+        $filePreco = $_FILES["arquivoPreco"];
+
+        $dirFileNamePrazo = "uploads/" . $filePrazo["name"];
 
 
-        if ($file['type'] == 'text/csv') {
-            if (move_uploaded_file($file["tmp_name"], $dirFileName)) {
-                $dados = CSV::lerArquivo($dirFileName, true, ';');
-                $resultado = CSV::criarArquivoCSVCorrigido($dirFileName, $dados, ';');
+
+        if(isset($filePreco["name"]) && !empty($filePreco["name"])) {
+            $dirFileNamePreco = "uploads/" . $filePreco["name"];
+
+            if (move_uploaded_file($filePreco["tmp_name"], $dirFileNamePreco)) {
+                $dadosPreco = CSV::lerArquivo($dirFileNamePreco, true, ';');
+                $resultadoPreco = CSV::criarArquivoCSVCorrigido($dirFileNamePreco, $dadosPreco, ';');
+            }
+
+        }
+
+
+        if ($filePrazo['type'] == 'text/csv') {
+
+            if (move_uploaded_file($filePrazo["tmp_name"], $dirFileNamePrazo)) {
+                $dadosPrazo = CSV::lerArquivo($dirFileNamePrazo, true, ';');
+                $resultadoPrazo = CSV::criarArquivoCSVCorrigido($dirFileNamePrazo, $dadosPrazo, ';');
 
                 echo "<br><br><h1>Arquivo CSV verificado e gerado com sucesso!!</h1>";
-                echo "<br><h3>Clique no Link Abaixo para baixar o arquivo verificado</h3>";
-                echo "<br><a href='{$dirFileName}' class='totais'>Baixar Arquivo CSV</a>";
+                echo "<br><h3>Clique no Link Abaixo para baixar o arquivo corrigido</h3>";
+                echo "<br><a href='{$dirFileNamePrazo}' class='totais'>Baixar Arquivo CSV de Prazo</a>";
 
-                if($resultado) {
+                if(isset($filePreco["name"]) && !empty($filePreco["name"])) {
+                    echo "<br><a href='{$dirFileNamePreco}' class='totais'>Baixar Arquivo CSV de Preço</a>";
+                    //================================================================
+                    //========= INICIA AS VERIFICAÇÕES DE SIGLAS
+                    //================================================================
+                    if(isset($filePreco["name"]) && !empty($filePreco["name"]) && isset($filePrazo["name"]) && !empty($filePrazo["name"])){
+                        $arraySilglaPreco = CSV::montaArraySigla($dirFileNamePreco, true, ';');
+                        $arraySilglaPrazo = CSV::montaArraySigla($dirFileNamePrazo, true, ';');
+                        $validador->validarSiglas($arraySilglaPrazo, $arraySilglaPreco);
+                    }
+                }
 
-                    //$baseCep = BaseCep::lerBaseCep('./BaseCEP/Lista_de_CEPs.xlsx', 'D', 'E');
-                    $arrayCEP = CSV::montaArrayCEP($dirFileName, true, ';');
+
+
+
+                //================================================================
+                //========= INICIA AS VERIFICAÇÕES DE CEP
+                //================================================================
+                if($resultadoPrazo) {
+
+                    $arrayCEP = CSV::montaArrayCEP($dirFileNamePrazo, true, ';');
 
                     $validador->validar($arrayCEP);
+
 
                     //================================================================
                     // VERIFICA SE O CEP EXISTE NA BASE DE DADOS
@@ -64,6 +100,11 @@
                     // IMPRIME NO HTML OS RESULTADOS
                     //========================================================
                     echo '<br><br><hr>';
+                    echo "<br><h3>Siglas Divergentes: </h3>";
+                    echo '<p class="totais">Total: ' . count($validador->siglas_divergentes) . "</p>";
+                    foreach($validador->siglas_divergentes as $item){
+                        echo "$item<br>";
+                    };
                     echo "<br><h3>CEPs com caracteres incorretos: </h3>";
                     echo '<p class="totais">Total: ' . count($validador->ceps_incorretos) . "</p>";
                     foreach ($validador->ceps_incorretos as $items) {
@@ -81,9 +122,22 @@
                     }
                 }
 
-                die();
-            }
-        } else {
+                    function formatMicrotime($time) {
+                        return date('i:s', (int) $time);
+                    }
+
+                    $end_time = microtime(true);
+                    $total_time = ($end_time - $start_time);
+
+                    $total_time_round = formatMicrotime($total_time);
+                    //$total_time_round = number_format($total_time, 2, '.');
+
+                    echo "<p class='timer'>Tempo total de execução {$total_time_round} minutos.</p>";
+
+
+                }
+        }
+        else {
             echo "<br><br><h1>Nenhum arquivo carregado! Verifique se o formato é CSV!</h1>";
             echo "<p>Que beleza ein... Tenha mais atenção né bixo!</p>";
             echo "<p>Se deseja validar arquivos EXCEL, favor retornar e escolher a opção correta de envio!</p>";

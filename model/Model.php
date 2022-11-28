@@ -1,7 +1,8 @@
 <?php
+namespace Model;
 
-namespace Classes;
-use \PDO;
+use PDO;
+
 class Model
 {
     protected $db;

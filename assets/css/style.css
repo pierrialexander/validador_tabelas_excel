@@ -6,6 +6,12 @@
     margin: 0;
 }
 
+.centralize {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 hr {
     border-color: white;
 }
@@ -36,6 +42,18 @@ form {
     font-weight: 600;
 }
 
+.background-novo {
+    background-color: maroon;
+}
+
+.timer {
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #161B22;
+    color: #4F95E5;
+    font-weight: 600;
+}
+
 .letras {
     width: 300px;
     background-color: #0D1117;
@@ -45,4 +63,16 @@ form {
 .letras:focus {
     background-color: #0D1117;
     color: #BEC6CD;
+}
+
+.loading {
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    height: 100vh;
+    width: 100%;
+    z-index: 900;
+}
+
+.loading label {
+    font-size: 24px;
 }
